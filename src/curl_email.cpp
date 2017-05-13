@@ -45,7 +45,7 @@ void CurlEmail::sendEmail(const string& from, const list<string>& to,
   
   shared_ptr<stringstream> sstream = CurlEmail::getBodyStream(from, to, subject, body);
 
-  curl_easy_setopt(curl.get(), CURLOPT_VERBOSE, 1);
+  // curl_easy_setopt(curl.get(), CURLOPT_VERBOSE, 1);
   curl_easy_setopt(curl.get(), CURLOPT_READFUNCTION, CurlEmail::body_payload);
   curl_easy_setopt(curl.get(), CURLOPT_READDATA, sstream.get());
   curl_easy_setopt(curl.get(), CURLOPT_UPLOAD, 1L);

@@ -23,6 +23,11 @@ set_property(SOURCE ${SOURCES}
   PROPERTY COMPILE_FLAGS "-Wall -pedantic -Wextra")
 add_definitions(-DBOOST_LOG_DYN_LINK)
 
+# Custom constant
+add_definitions(-DVERSION="0.0.1")
+add_definitions(-DGLOBAL_CONFIG_PATH="/home/andrea/Documents/msns/config.ini")
+
+
 add_executable(msns ${SOURCES})
 target_link_libraries(msns
   ${LIB_LOCATION}

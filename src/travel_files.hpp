@@ -7,13 +7,18 @@
 #include <dirent.h>
 
 #include <string>
+#include <list>
+
+#include "const.hpp"
+#include "report.hpp"
 
 namespace msns {
-  extern const std::string LOCAL_CONFIG_NAME;
-  const char PATH_SEPARATOR = '/';
+  typedef unsigned long file_size;
 
-  void travelDir(const std::string& path, int& size);
-  int getSize(const std::string& path);
+  void travelDir(const std::string& path, file_size& size, std::list<msns::Report>& reports);
+  long getSize(const std::string& path);
+
+  std::string sysErrMsg();
 }
 
 #endif

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <list>
+#include <map>
 
 namespace msns {
 
@@ -10,7 +11,8 @@ namespace msns {
   protected:
     std::string fileName;
 
-    Config(const std::string& fileName) : fileName(fileName) {};
+    explicit Config(const std::string& fileName) : fileName(fileName) {};
+    Config(std::string&& fileName) : fileName(fileName) {};
     Config(const Config& other) : fileName(other.fileName) {};
     Config(Config&& other) { fileName = std::move(other.fileName); };
     virtual ~Config() {};
@@ -24,11 +26,20 @@ namespace msns {
   };
 
   class GlobalConfig : public Config {
+    void sanitize();
+  public:
+    std::string machineName;
     std::list<std::string> folders;
     std::list<std::string> emails;
+    
+    std::string emailUrl;
+    std::string emailUsername;
+    std::string emailPassword;
+    bool emailSsl;
+    std::string emailFrom;
 
-  public:
-    GlobalConfig(const std::string& fileName) : Config(fileName) {};
+    explicit GlobalConfig(const std::string& fileName) : Config(fileName) {};
+    GlobalConfig(std::string&& fileName) : Config(fileName) {};
     GlobalConfig(const GlobalConfig& other);
     GlobalConfig(GlobalConfig&& other);
     virtual ~GlobalConfig() {};
@@ -40,11 +51,12 @@ namespace msns {
   };
   
   class LocalConfig : public Config {
+  public:
     int sizeLimit;
+    std::string name;
     std::list<std::string> emails;
 
-  public:
-    LocalConfig(const std::string& fileName) : Config(fileName) {};
+    explicit LocalConfig(const std::string& fileName) : Config(fileName) {};
     LocalConfig(const LocalConfig& other);
     LocalConfig(LocalConfig&& other);
     virtual ~LocalConfig() {};

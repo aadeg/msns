@@ -6,7 +6,11 @@
 #include <memory>
 #include <string>
 #include <sstream>
+#include <iostream>
 #include <list>
+#include <map>
+
+#include "report.hpp"
 
 namespace msns {
   class EmailHandler {
@@ -45,6 +49,33 @@ namespace msns {
 		   const std::list<std::string>& to,
 		   const std::string& subject,
 		   const std::string& body);
+  };
+
+  class EmailBuilder {
+  public:
+    typedef std::string email_addr;
+    typedef std::shared_ptr<const Report> report_ptr;
+
+  private:
+
+    std::string machineName;
+    std::string reportLvl;
+    std::list<email_addr> globalEmails;
+    std::list<report_ptr> globalReports;
+    std::map<email_addr, std::list<report_ptr>> emailMap;
+
+    std::ostream& outputMessage(std::ostream& out, 
+				const std::list<report_ptr>& reports) const;
+  public:
+    explicit EmailBuilder(const std::string& machineName,
+			  std::list<email_addr> globalEmails,
+			  const std::string& reportLvl) :
+      machineName(machineName), reportLvl(reportLvl),
+      globalEmails(globalEmails) {};
+
+    void addReport(const Report& report);
+    void sendAll(EmailHandler& sender, const std::string& from) const;
+    void debug() const;
   };
 }
 
