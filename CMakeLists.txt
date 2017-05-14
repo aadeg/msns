@@ -24,7 +24,7 @@ set_property(SOURCE ${SOURCES}
 add_definitions(-DBOOST_LOG_DYN_LINK)
 
 # Custom constant
-add_definitions(-DVERSION="0.0.1")
+add_definitions(-DVERSION="0.1.0")
 
 if(CMAKE_BUILD_TYPE MATCHES DEBUG)
   set(GLOB_CONFIG_PATH "./config.ini")
