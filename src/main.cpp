@@ -1,6 +1,3 @@
-#include <sys/types.h>
-#include <sys/stat.h>
-
 #include <iostream>
 #include <string>
 #include <algorithm>
@@ -15,6 +12,7 @@
 #include <boost/program_options.hpp>
 
 #include "const.hpp"
+#include "utils.hpp"
 #include "config.hpp"
 #include "travel_files.hpp"
 #include "email.hpp"
@@ -25,7 +23,7 @@ using namespace msns;
 
 void runAnalysis(const GlobalConfig& config, const string& reportLvl, bool emailNtf);
 void initFolder(const string& initFolder, const string& initName, int initSize);
-bool validFolder(const string& path);
+
 
 void init_log() {
   namespace logging = boost::log;
@@ -65,7 +63,8 @@ int main(int argc, char* argv[]){
   po::options_description init_desc("Init Options");
 
   init_desc.add_options()
-    ("folder", po::value<string>(&_initFolder), "folder to be inizialized")
+    ("folder", po::value<string>(&_initFolder)->default_value("."),
+     "folder to be inizialized")
     ("name", po::value<string>(&initName), "name for description purpose")
     ("size", po::value<int>(&initSize), "limit size in MiB");
 
@@ -80,11 +79,12 @@ int main(int argc, char* argv[]){
   po::notify(vm);
 
   if (vm.count("help")){
+    cout << "Usage: msns [OPTIONS...]" << endl;
     cout << cmdline_desc << endl;
     return 0;
   }
   if (vm.count("version")){
-    cout << VERSION_MSG << endl;
+    cout << VERSION_MSG << endl << endl;
     return 0;
   }
 
@@ -188,15 +188,17 @@ void runAnalysis(const GlobalConfig& config, const string& reportLvl,
 }
 
 void initFolder(const string& initFolder, const string& initName, int initSize){
-  cout << initFolder << endl
-       << initSize << endl;
+  string configFile = initFolder + PATH_SEPARATOR + LOCAL_CONFIG_NAME;
+  if (fileExists(configFile)){
+    cerr << "Folder already initialized" << endl;
+    return;
+  }
+
+  LocalConfig locConfig;
+  locConfig.name = initName;
+  locConfig.sizeLimit = initSize;
+
+  locConfig.save(configFile);
 }
 
-bool validFolder(const string& path){
-  struct stat buf;
-  if (stat(path.c_str(), &buf) != 0)
-    return false;
-  if (!(buf.st_mode & S_IFDIR))
-    return false;
-  return true;
-}
+

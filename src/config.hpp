@@ -11,6 +11,7 @@ namespace msns {
   protected:
     std::string fileName;
 
+    Config() {};
     explicit Config(const std::string& fileName) : fileName(fileName) {};
     Config(std::string&& fileName) : fileName(fileName) {};
     Config(const Config& other) : fileName(other.fileName) {};
@@ -56,6 +57,7 @@ namespace msns {
     std::string name;
     std::list<std::string> emails;
 
+    LocalConfig();
     explicit LocalConfig(const std::string& fileName) : Config(fileName) {};
     LocalConfig(const LocalConfig& other);
     LocalConfig(LocalConfig&& other);
@@ -65,6 +67,7 @@ namespace msns {
     LocalConfig& operator= (LocalConfig&& other);
     
     void load();
+    void save(const std::string& fileName) const;
   };
 
 }

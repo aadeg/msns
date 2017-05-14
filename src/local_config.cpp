@@ -10,6 +10,8 @@ namespace pt = boost::property_tree;
 using namespace std;
 using namespace msns;
 
+LocalConfig::LocalConfig() {}
+
 LocalConfig::LocalConfig(const LocalConfig& other) :
   Config(other), sizeLimit(other.sizeLimit), name(other.name),
   emails(other.emails) {}
@@ -53,4 +55,20 @@ void LocalConfig::load(){
 	emails.push_back(key.first);
     }
   }
+}
+
+void LocalConfig::save(const string& fileName) const {
+  pt::ptree tree;
+  
+  tree.put("general.name", name);
+  tree.put("general.size_limit", sizeLimit);
+
+  pt::ptree emailTree;
+  for (auto& email : emails)
+    emailTree.push_back(pt::ptree::value_type(email, pt::ptree("1")));
+  if (emails.empty())
+    emailTree.push_back(pt::ptree::value_type("test@test.com", pt::ptree("0")));
+
+  tree.put_child("emails", emailTree);
+  pt::write_ini(fileName, tree);
 }

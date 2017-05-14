@@ -21,6 +21,9 @@ namespace msns {
   std::string repeatChr(int dim, char c = ' ');
 
   std::string currentTime(const std::string& format);
+
+  bool validFolder(const std::string& path);
+  bool fileExists(const std::string& filePath);
 }
 
 

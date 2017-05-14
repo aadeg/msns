@@ -25,8 +25,15 @@ add_definitions(-DBOOST_LOG_DYN_LINK)
 
 # Custom constant
 add_definitions(-DVERSION="0.0.1")
-add_definitions(-DGLOBAL_CONFIG_PATH="/home/andrea/Documents/msns/config.ini")
 
+if(CMAKE_BUILD_TYPE MATCHES DEBUG)
+  set(GLOB_CONFIG_PATH "./config.ini")
+else()
+  set(GLOB_CONFIG_PATH "/etc/msns/config.ini")
+endif()
+
+message(STATUS "Global config path: " ${GLOB_CONFIG_PATH})
+add_definitions(-DGLOBAL_CONFIG_PATH="${GLOB_CONFIG_PATH}")
 
 add_executable(msns ${SOURCES})
 target_link_libraries(msns
@@ -35,3 +42,16 @@ target_link_libraries(msns
   ${Boost_LIBRARIES}
   ${CURL_LIBRARIES})
 target_compile_options(msns PUBLIC ${VMIME_CFLAGS_OTHER})
+
+
+# INSTALL
+install(DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/assets/
+  DESTINATION "/etc/msns"
+  DIRECTORY_PERMISSIONS
+  OWNER_WRITE OWNER_READ OWNER_EXECUTE
+  GROUP_WRITE GROUP_READ GROUP_EXECUTE
+  WORLD_READ WORLD_EXECUTE)
+install(TARGETS msns
+  RUNTIME DESTINATION bin
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib)
