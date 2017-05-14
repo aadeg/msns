@@ -4,7 +4,7 @@ using namespace std;
 using namespace msns;
 
 ostream& operator<<(ostream& os, const Report& r){
-  float perc = (r.size - r.sizeLimit) * 100 / r.sizeLimit;
+  double perc = (r.size - r.sizeLimit) / r.sizeLimit * 100;
   os << "Name: " << r.name << endl
      << "Path: " << r.path << endl
      << "Size: " << r.size << endl

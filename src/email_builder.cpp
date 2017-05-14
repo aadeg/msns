@@ -42,13 +42,13 @@ ostream& EmailBuilder::outputMessage(ostream& out,
       << repeatChr(8, '-') << endl;
 
   for (auto r : reports){
-    float perc = (r->size - r->sizeLimit) * 100 / r->sizeLimit;
+    double perc = int(r->size - r->sizeLimit) / double(r->sizeLimit) * 100;
     out  << repeatChr(4) 
 	 << formattedStr(r->name, 20) << " "
 	 << formattedStr(r->path, 60) << " "
 	 << formattedStr(to_string(r->size), 10) << " "
 	 << formattedStr(to_string(r->sizeLimit), 10) << " "
-	 << formattedStr(perc, 2, 7) << '%' << endl;
+	 << formattedStr(perc, 3, 7) << '%' << endl;
   }
 
   if (reports.empty())

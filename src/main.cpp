@@ -166,19 +166,19 @@ void runAnalysis(const GlobalConfig& config, const string& reportLvl,
 
   EmailBuilder emailBuilder(config.machineName, config.emails, reportLvl);
   for (const Report& r : reports){
-    float perc = (r.size - r.sizeLimit) * 100 / r.sizeLimit;
+    double perc = int(r.size - r.sizeLimit) / double(r.sizeLimit) * 100;
     BOOST_LOG_TRIVIAL(warning) << "## REPORT ##" << endl
 			       << "Name: " << r.name << endl
 			       << "Path: " << r.path << endl
 			       << "Size: " << r.size << endl
 			       << "SLmt: " << r.sizeLimit << endl
-			       << "Perc: " << setprecision(2)
+			       << "Perc: " << setprecision(3)
 			       << perc << "%";
     if (emailNtf)
       emailBuilder.addReport(r);
   }
 
-  if (emailNtf){
+  if (!reports.empty() && emailNtf){
     CurlEmail emailHandler(config.emailUrl, config.emailUsername,
 			  config.emailPassword, config.emailSsl);
 
