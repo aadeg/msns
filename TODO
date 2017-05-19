@@ -1,0 +1,10 @@
+HIGH PRIORITY
+--
+
+NORMAL PRIORITY
++ Improve email formatting code using fmt library
++ Add test for CI
+
+LOW PRIORITY
++ Add monitor for file system disk space usage
++ Imprement nested path detection algorithm to sanatize global configuration
