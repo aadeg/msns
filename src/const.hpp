@@ -25,6 +25,7 @@ namespace msns {
     "This program comes with ABSOLUTELY NO WARRANTY";
   const std::string LOCAL_CONFIG_NAME = "msns.ini";
   const char PATH_SEPARATOR = '/';
+  const std::string MSNS_LOGGER = "msns";
 }
 
 #endif

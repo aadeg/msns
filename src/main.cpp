@@ -42,12 +42,34 @@ using namespace msns;
 void runAnalysis(const GlobalConfig& config, const string& reportLvl, bool emailNtf);
 void initFolder(const string& initFolder, const string& initName, int initSize);
 
+void initLogger(){
+  using namespace spdlog;
+
+  spdlog::set_level(level::debug);
+
+  // SINKS
+  vector<sink_ptr> sinks;
+  auto stdout_sink = sinks::stdout_sink_st::instance();
+  auto color_sink = make_shared<sinks::ansicolor_sink>(stdout_sink);
+  sinks.push_back(color_sink);
+
+  auto rotating_sink = make_shared<sinks::rotating_file_sink_st>
+    (FILE_LOGGER_PATH, 1049000 * 10, 3);
+  sinks.push_back(rotating_sink);
+  
+  auto combined_logger = make_shared<logger>("msns", sinks.begin(), sinks.end());
+  register_logger(combined_logger);
+}
+
 int main(int argc, char* argv[]){
   chrono::high_resolution_clock::time_point start_t, end_t;
   start_t = chrono::high_resolution_clock::now();
 
-  spdlog::set_level(spdlog::level::debug);
-  auto logger = spdlog::stdout_color_mt("main");
+  ////////////////////////////////////////////////////////////
+  //                        LOGGER                          //
+  ////////////////////////////////////////////////////////////
+  initLogger();
+  auto logger = spdlog::get(MSNS_LOGGER);
 
   ////////////////////////////////////////////////////////////
   //                        OPTIONS                         //
@@ -164,7 +186,7 @@ int main(int argc, char* argv[]){
 
 void runAnalysis(const GlobalConfig& config, const string& reportLvl,
 		 bool emailNtf){
-  auto logger = spdlog::get("main");
+  auto logger = spdlog::get(MSNS_LOGGER);
   ////////////////////////////////////////////////////////////
   //                       EXPLORING                        //
   ////////////////////////////////////////////////////////////
@@ -217,7 +239,7 @@ void initFolder(const string& initFolder, const string& initName, int initSize){
   locConfig.name = initName;
   locConfig.sizeLimit = initSize;
 
-  spdlog::get("main")->info("Saving local config...");
+  spdlog::get(MSNS_LOGGER)->info("Saving local config...");
   locConfig.save(configFile);
 }
 

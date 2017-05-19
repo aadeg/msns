@@ -24,6 +24,8 @@
 
 #include "spdlog/spdlog.h"
 
+#include "const.hpp"
+
 namespace msns {
 
   class Config {
@@ -31,9 +33,7 @@ namespace msns {
     std::shared_ptr<spdlog::logger> logger;
     std::string fileName;
 
-    Config() { 
-      logger = spdlog::get("config");
-      if (!logger) logger = spdlog::stdout_color_mt("config"); };
+    Config() { logger = spdlog::get(MSNS_LOGGER); }
     explicit Config(const std::string& fileName) : Config() { this->fileName = fileName; };
     Config(std::string&& fileName) : fileName(fileName) {};
     Config(const Config& other) : fileName(other.fileName) {};

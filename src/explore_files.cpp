@@ -20,6 +20,7 @@
 
 #include "spdlog/spdlog.h"
 
+#include "const.hpp"
 #include "explore_files.hpp"
 #include "config.hpp"
 
@@ -29,9 +30,7 @@ using namespace msns;
 string sysErrMsg();
 
 void msns::exploreDir(const string& path, file_size& size, list<Report>& reports){
-  auto logger = spdlog::get("explorer");
-  if (!logger)
-    logger = spdlog::stdout_color_mt("explorer");
+  auto logger = spdlog::get(MSNS_LOGGER);
 
   SPDLOG_TRACE(logger, "Calling exploreDir. Path: {0}", path);
   size = 0;

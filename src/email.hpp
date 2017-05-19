@@ -28,6 +28,7 @@
 
 #include "spdlog/spdlog.h"
 
+#include "const.hpp"
 #include "report.hpp"
 
 namespace msns {
@@ -35,7 +36,7 @@ namespace msns {
   protected:
     std::shared_ptr<spdlog::logger> logger;
   public:
-    EmailHandler();
+    EmailHandler() { logger = spdlog::get(MSNS_LOGGER); };
     virtual void sendEmail(const std::string& from,
 			   const std::list<std::string>& to,
 			   const std::string& subject,
