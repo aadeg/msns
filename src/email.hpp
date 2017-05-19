@@ -26,11 +26,16 @@
 #include <list>
 #include <map>
 
+#include "spdlog/spdlog.h"
+
 #include "report.hpp"
 
 namespace msns {
   class EmailHandler {
+  protected:
+    std::shared_ptr<spdlog::logger> logger;
   public:
+    EmailHandler();
     virtual void sendEmail(const std::string& from,
 			   const std::list<std::string>& to,
 			   const std::string& subject,
@@ -91,7 +96,6 @@ namespace msns {
 
     void addReport(const Report& report);
     void sendAll(EmailHandler& sender, const std::string& from) const;
-    void debug() const;
   };
 }
 

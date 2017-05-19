@@ -17,7 +17,6 @@
 #include "config.hpp"
 #include "utils.hpp"
 
-#include <boost/log/trivial.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
 
@@ -109,8 +108,7 @@ void GlobalConfig::sanitize(){
   auto it = folders.begin();
   while (it != folders.end()){
     if (it->front() != '/'){
-      BOOST_LOG_TRIVIAL(warning) << "No-absolute path found: " << *it;
-      BOOST_LOG_TRIVIAL(warning) << "Path must be absolute";
+      logger->error("Non-absolute path found: {}. Path must be absolute", *it);
       it = folders.erase(it);
     } else if (it->back() == '/'){
       (*it) = it->substr(0, it->size() - 1);

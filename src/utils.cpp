@@ -17,8 +17,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#include <boost/log/trivial.hpp>
-
 #include <iomanip>
 #include <algorithm>
 #include <sstream>

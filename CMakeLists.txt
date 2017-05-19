@@ -6,12 +6,28 @@ include(FindPkgConfig)
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 add_compile_options("-std=c++11")
 
+# Custom constant
+add_definitions(-DVERSION="0.1.0")
+
+if(CMAKE_BUILD_TYPE MATCHES DEBUG)
+  set(GLOB_CONFIG_PATH "./config.ini")
+  add_definitions(-DSPDLOG_DEBUG_ON)
+  add_definitions(-DSPDLOG_TRACE_ON)
+else()
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto -O3")
+  set(GLOB_CONFIG_PATH "/etc/msns/config.ini")
+endif()
+
+message(STATUS "Global config path: " ${GLOB_CONFIG_PATH})
+add_definitions(-DGLOBAL_CONFIG_PATH="${GLOB_CONFIG_PATH}")
+
 # Static lib
 find_package(Boost 1.54 REQUIRED
   COMPONENTS program_options log)
 find_package(Threads)
 find_package(CURL REQUIRED)
 
+# FILES
 include_directories(include src
   ${Boost_INCLUDE_DIR}
   ${CMAKE_BINARY_DIR}
@@ -23,17 +39,8 @@ set_property(SOURCE ${SOURCES}
   PROPERTY COMPILE_FLAGS "-Wall -pedantic -Wextra")
 add_definitions(-DBOOST_LOG_DYN_LINK)
 
-# Custom constant
-add_definitions(-DVERSION="0.1.0")
 
-if(CMAKE_BUILD_TYPE MATCHES DEBUG)
-  set(GLOB_CONFIG_PATH "./config.ini")
-else()
-  set(GLOB_CONFIG_PATH "/etc/msns/config.ini")
-endif()
 
-message(STATUS "Global config path: " ${GLOB_CONFIG_PATH})
-add_definitions(-DGLOBAL_CONFIG_PATH="${GLOB_CONFIG_PATH}")
 
 add_executable(msns ${SOURCES})
 target_link_libraries(msns

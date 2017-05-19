@@ -13,18 +13,18 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+#include <iomanip>
 #include "report.hpp"
 
 using namespace std;
 using namespace msns;
 
 ostream& operator<<(ostream& os, const Report& r){
-  double perc = (r.size - r.sizeLimit) / r.sizeLimit * 100;
-  os << "Name: " << r.name << endl
-     << "Path: " << r.path << endl
-     << "Size: " << r.size << endl
-     << "SLmt: " << r.sizeLimit << endl
-     << "Perc: " << perc << "%" << endl;
+  double perc = int(r.size - r.sizeLimit) / double(r.sizeLimit) * 100;
+  os << r.name
+     << " (" << r.path << ")"
+     << " Size: " << r.size
+     << " Limt: " << r.sizeLimit
+     << " Perc: " << setprecision(3) << perc << '%';
   return os;
 }

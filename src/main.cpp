@@ -14,24 +14,25 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-    
 #include <iostream>
 #include <string>
 #include <algorithm>
 #include <vector>
 #include <map>
 #include <memory>
-#include <iomanip>
+#include <chrono>
 
-#include <boost/log/trivial.hpp>
 #include <boost/log/core.hpp>
 #include <boost/log/expressions.hpp>
 #include <boost/program_options.hpp>
 
+#include "spdlog/spdlog.h"
+#include "spdlog/fmt/ostr.h"
+
 #include "const.hpp"
 #include "utils.hpp"
 #include "config.hpp"
-#include "travel_files.hpp"
+#include "explore_files.hpp"
 #include "email.hpp"
 #include "report.hpp"
 
@@ -41,15 +42,12 @@ using namespace msns;
 void runAnalysis(const GlobalConfig& config, const string& reportLvl, bool emailNtf);
 void initFolder(const string& initFolder, const string& initName, int initSize);
 
-
-void init_log() {
-  namespace logging = boost::log;
-  logging::core::get()->set_filter
-    (logging::trivial::severity >= logging::trivial::debug);
-}
-
 int main(int argc, char* argv[]){
-  init_log();
+  chrono::high_resolution_clock::time_point start_t, end_t;
+  start_t = chrono::high_resolution_clock::now();
+
+  spdlog::set_level(spdlog::level::debug);
+  auto logger = spdlog::stdout_color_mt("main");
 
   ////////////////////////////////////////////////////////////
   //                        OPTIONS                         //
@@ -142,6 +140,7 @@ int main(int argc, char* argv[]){
   ////////////////////////////////////////////////////////////
   //                        CONFING                         //
   ////////////////////////////////////////////////////////////
+  logger->info("Global config path is {}", GLOBAL_CONFIG_PATH);
   GlobalConfig config(GLOBAL_CONFIG_PATH);
   config.load();
 
@@ -149,48 +148,51 @@ int main(int argc, char* argv[]){
   //                        ROUTING                         //
   ////////////////////////////////////////////////////////////
   if (run){
+    SPDLOG_DEBUG(logger, "Calling Run performer...");
     runAnalysis(config, reportLvl, emailNtf);
   } else if (init) {
+    SPDLOG_DEBUG(logger, "Calling Init performer...");
     initFolder(_initFolder, initName, initSize);
   }
+
+  end_t = chrono::high_resolution_clock::now();
+  auto duration = chrono::duration_cast<chrono::milliseconds>(end_t - start_t).count();
+  logger->info("Finished in {} sec", duration / 1000.0);
 
   return 0;
 }
 
 void runAnalysis(const GlobalConfig& config, const string& reportLvl,
 		 bool emailNtf){
+  auto logger = spdlog::get("main");
   ////////////////////////////////////////////////////////////
-  //                       TRAVELING                        //
+  //                       EXPLORING                        //
   ////////////////////////////////////////////////////////////
+  logger->info("Found {} folders to explore", config.folders.size());
   list<Report> reports;
   // Traveling
   for (auto folder : config.folders){
     unsigned long globSize;
-    travelDir(folder, globSize, reports);
+    exploreDir(folder, globSize, reports);
   }
 
   ////////////////////////////////////////////////////////////
   //                      REPORTING                         //
   ////////////////////////////////////////////////////////////
-  BOOST_LOG_TRIVIAL(info) << reports.size() << " reports created";
   if (reportLvl == "violation"){
     // Filtering
+    SPDLOG_DEBUG(logger, "Report Lvl: {}. Filtering reports", reportLvl);
+    SPDLOG_DEBUG(logger, "{} Reports before filtering", reports.size());
     reports.remove_if([](Report r){
 	return r.size < r.sizeLimit;
+
       });
-    BOOST_LOG_TRIVIAL(info) << reports.size() << " reports left after filtering";
   }
+  logger->info("{} reports created", reports.size());
 
   EmailBuilder emailBuilder(config.machineName, config.emails, reportLvl);
   for (const Report& r : reports){
-    double perc = int(r.size - r.sizeLimit) / double(r.sizeLimit) * 100;
-    BOOST_LOG_TRIVIAL(warning) << "## REPORT ##" << endl
-			       << "Name: " << r.name << endl
-			       << "Path: " << r.path << endl
-			       << "Size: " << r.size << endl
-			       << "SLmt: " << r.sizeLimit << endl
-			       << "Perc: " << setprecision(3)
-			       << perc << "%";
+    logger->warn("Report: {}", r);
     if (emailNtf)
       emailBuilder.addReport(r);
   }
@@ -199,7 +201,7 @@ void runAnalysis(const GlobalConfig& config, const string& reportLvl,
     CurlEmail emailHandler(config.emailUrl, config.emailUsername,
 			  config.emailPassword, config.emailSsl);
 
-    emailBuilder.debug();
+    logger->info("Sending notification emails...");
     emailBuilder.sendAll(emailHandler, config.emailFrom);
   }
 }
@@ -215,6 +217,7 @@ void initFolder(const string& initFolder, const string& initName, int initSize){
   locConfig.name = initName;
   locConfig.sizeLimit = initSize;
 
+  spdlog::get("main")->info("Saving local config...");
   locConfig.save(configFile);
 }
 

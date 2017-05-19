@@ -75,19 +75,6 @@ ostream& EmailBuilder::outputMessage(ostream& out,
   return out;
 }
 
-void EmailBuilder::debug() const {
-  for (auto kv : emailMap){
-    BOOST_LOG_TRIVIAL(debug) << "Email: " << kv.first << " Reports";
-    for (report_ptr rptr : kv.second)
-      BOOST_LOG_TRIVIAL(debug) << " - " << rptr->name;
-  }
-
-  ostringstream out;
-  outputMessage(out, globalReports);
-  cout << out.str();
-  
-}
-
 void EmailBuilder::sendAll(EmailHandler& sender, const string& from) const {
   string subj = "[msns] Rapporto";
 

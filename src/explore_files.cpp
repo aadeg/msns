@@ -18,9 +18,9 @@
 #include <cstring>
 #include <memory>
 
-#include <boost/log/trivial.hpp>
+#include "spdlog/spdlog.h"
 
-#include "travel_files.hpp"
+#include "explore_files.hpp"
 #include "config.hpp"
 
 using namespace std;
@@ -28,13 +28,17 @@ using namespace msns;
 
 string sysErrMsg();
 
-void msns::travelDir(const string& path, file_size& size, list<Report>& reports){
-  BOOST_LOG_TRIVIAL(trace) << "travelFile - Path: " << path;
+void msns::exploreDir(const string& path, file_size& size, list<Report>& reports){
+  auto logger = spdlog::get("explorer");
+  if (!logger)
+    logger = spdlog::stdout_color_mt("explorer");
+
+  SPDLOG_TRACE(logger, "Calling exploreDir. Path: {0}", path);
   size = 0;
 
   shared_ptr<DIR> baseDir(opendir(path.c_str()), closedir);
   if (!baseDir){
-    BOOST_LOG_TRIVIAL(error) << sysErrMsg() << " - Path: " << path;
+    logger->error("{} with path {}", sysErrMsg(), path);
     return;
   }
 
@@ -47,9 +51,10 @@ void msns::travelDir(const string& path, file_size& size, list<Report>& reports)
       continue;
 
     string dirPath = path + PATH_SEPARATOR + dir->d_name;
+    SPDLOG_TRACE(logger, "Exploring {}", dirPath);
 
     if (dir->d_type == DT_REG && LOCAL_CONFIG_NAME == dir->d_name){
-      BOOST_LOG_TRIVIAL(info) << "Found limited folder";
+      logger->info("Found limited folder: {}", dirPath);
       makeReport = true;
       localConfig.reset(new LocalConfig(dirPath));
       localConfig->load();
@@ -61,22 +66,22 @@ void msns::travelDir(const string& path, file_size& size, list<Report>& reports)
       
       if (fileSize >= 0){
 	size += fileSize;
-	BOOST_LOG_TRIVIAL(trace) << "File: " << dirPath << " SIZE: " << fileSize;
+	SPDLOG_TRACE(logger, "File {}, size {}B", dirPath, fileSize);
       } else {
-	BOOST_LOG_TRIVIAL(error) << sysErrMsg() << " File: " << fileSize;
+	logger->error("{} with file {}", sysErrMsg(), fileSize);
       }
 
     } else if (dir->d_type == DT_DIR){
       // It is a directory
       file_size dirSize;
-      travelDir(dirPath, dirSize, reports);
+      exploreDir(dirPath, dirSize, reports);
       size += dirSize;
     }
   }
 
   // Report
   if (makeReport){
-    BOOST_LOG_TRIVIAL(trace) << "Making report";
+    SPDLOG_DEBUG(logger, "Making report at path {}", path);
     Report report;
     report.name = localConfig->name;
     report.path = path;
@@ -88,8 +93,8 @@ void msns::travelDir(const string& path, file_size& size, list<Report>& reports)
   }
 
   if (errno != 0)
-    BOOST_LOG_TRIVIAL(error) << sysErrMsg() << " - Path: " << path;
-  BOOST_LOG_TRIVIAL(trace) << "Path: " << path << " SIZE: " << size;
+    logger->error("{} with path {}", sysErrMsg(), path);
+  SPDLOG_TRACE(logger, "Path {}, size {}B", path, size);
 }
 
 long msns::getSize(const string& path){

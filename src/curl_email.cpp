@@ -14,7 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <boost/log/trivial.hpp>
 #include <boost/algorithm/string/replace.hpp>
 
 #include <iterator>
@@ -54,6 +53,10 @@ CurlEmail& CurlEmail::operator= (CurlEmail&& other){
 
 void CurlEmail::sendEmail(const string& from, const list<string>& to,
 			  const string& subject, const string& body){
+  string toStr;
+  for (const string& s : to)
+    toStr.append(s + " ");
+  logger->info("Sending email to {}(Subj: {})", toStr, subject);
 
   shared_ptr<curl_slist> recipents = CurlEmail::getRecipents(to);
   shared_ptr<CURL> curl = CurlEmail::getCurl(from, recipents);
@@ -68,8 +71,9 @@ void CurlEmail::sendEmail(const string& from, const list<string>& to,
 
   CURLcode res = curl_easy_perform(curl.get());
   if (res != CURLE_OK)
-    BOOST_LOG_TRIVIAL(error) << "curl_easy_perform failed: "
-			     << curl_easy_strerror(res);
+    logger->error("Failed to send email: {}", curl_easy_strerror(res));
+  else
+    logger->info("Email sent");
 }
 
 shared_ptr<CURL> CurlEmail::getCurl(const string& from,
@@ -109,7 +113,6 @@ shared_ptr<stringstream> CurlEmail::getBodyStream(const std::string& from,
 				      const std::string& body){
   stringstream* sstream = new stringstream(ios_base::in | ios_base::out);
 
-  BOOST_LOG_TRIVIAL(debug) << body;
   string _body = boost::replace_all_copy(body, "\n", "\r\n");
 
   *sstream << "From: <" << from << ">\r\n";
@@ -119,7 +122,6 @@ shared_ptr<stringstream> CurlEmail::getBodyStream(const std::string& from,
 	  << "\r\n"
 	   << _body << "\r\n";
 
-  BOOST_LOG_TRIVIAL(debug) << sstream->str();
   return shared_ptr<stringstream>(sstream);
 }
 

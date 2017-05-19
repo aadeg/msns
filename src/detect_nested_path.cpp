@@ -14,8 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <boost/log/trivial.hpp>
-
 #include <algorithm>
 
 #include "const.hpp"
@@ -29,7 +27,7 @@ using namespace msns;
 
 bool msns::detect_nested_path(pt::ptree& tree, string path){
   if (path.size() <= 0 || path[0] != PATH_SEPARATOR){
-    BOOST_LOG_TRIVIAL(error) << "detect_nested_path - Invalid path!";
+    // BOOST_LOG_TRIVIAL(error) << "detect_nested_path - Invalid path!";
     throw;
   }
 
@@ -42,22 +40,23 @@ bool msns::detect_nested_path(pt::ptree& tree, string path){
 bool msns::detect_nested_path(pt::ptree& tree, 
 			      vector<string>::iterator l_start, vector<string>::iterator l_end){
   if (l_start == l_end){
-    BOOST_LOG_TRIVIAL(trace) << "l_start == l_end";
+    // BOOST_LOG_TRIVIAL(trace) << "l_start == l_end";
     return false;
   }
 
-  BOOST_LOG_TRIVIAL(trace) << "New call: " << *l_start;
+  // BOOST_LOG_TRIVIAL(trace) << "New call: " << *l_start;
 
   auto it = tree.find(*l_start);
 
+  /*
   if (it == tree.not_found())
-    BOOST_LOG_TRIVIAL(debug) << "Not found";
+    // BOOST_LOG_TRIVIAL(debug) << "Not found";
   else 
-    BOOST_LOG_TRIVIAL(debug) << "Found";
+  // BOOST_LOG_TRIVIAL(debug) << "Found";*/
   if (it != tree.not_found() && it->second.empty()){
-    BOOST_LOG_TRIVIAL(debug) << "Nested detected";
+    // BOOST_LOG_TRIVIAL(debug) << "Nested detected";
     return true;
-  } 
+  }
 
   pt::ptree newTree;  
   pt::ptree::value_type newNode(*l_start, newTree);

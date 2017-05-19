@@ -17,18 +17,24 @@
 #ifndef _CONFIG_H_
 #define _CONFIG_H_
 
+#include <memory>
 #include <string>
 #include <list>
 #include <map>
+
+#include "spdlog/spdlog.h"
 
 namespace msns {
 
   class Config {
   protected:
+    std::shared_ptr<spdlog::logger> logger;
     std::string fileName;
 
-    Config() {};
-    explicit Config(const std::string& fileName) : fileName(fileName) {};
+    Config() { 
+      logger = spdlog::get("config");
+      if (!logger) logger = spdlog::stdout_color_mt("config"); };
+    explicit Config(const std::string& fileName) : Config() { this->fileName = fileName; };
     Config(std::string&& fileName) : fileName(fileName) {};
     Config(const Config& other) : fileName(other.fileName) {};
     Config(Config&& other) { fileName = std::move(other.fileName); };
