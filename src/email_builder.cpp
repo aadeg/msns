@@ -13,10 +13,9 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-#include <boost/log/trivial.hpp>
-
 #include <algorithm>
+
+#include "fmt/format.h"
 
 #include "utils.hpp"
 #include "email.hpp"
@@ -35,48 +34,32 @@ void EmailBuilder::addReport(const Report& report){
 
 ostream& EmailBuilder::outputMessage(ostream& out,
 				     const list<report_ptr>& reports) const {
-  out << "MSNS REPORT" << endl
-      << repeatChr(4)
-      << formattedStr("Data:", 15)
-      << currentTime("%a %d %b %Y %H:%M") << endl
-      << repeatChr(4)
-      << formattedStr("Tipo Rep.:", 15)
-      << reportLvl << endl << endl;
-  out << "RAPPORTO CONTROLLO"
-      << endl << endl;
-  out << repeatChr(4)
-      << formattedStr("nome", 20) << " "
-      << formattedStr("percorso", 60) << " "
-      << formattedStr("dim (MB)", 10) << " "
-      << formattedStr("limit (MB)", 10) << " "
-      << formattedStr("perc", 8) << endl;
-  out << repeatChr(4)
-      << repeatChr(20, '-') << " "
-      << repeatChr(60, '-') << " "
-      << repeatChr(10, '-') << " "
-      << repeatChr(10, '-') << " "
-      << repeatChr(8, '-') << endl;
+  string str("MSNS REPORT\n");
+  str += fmt::format("    {:<15}{}\n", "Date:", currentTime("%a %d %b %Y %H:%M"));
+  str += fmt::format("    {:<15}{}\n", "Rep. Type:", reportLvl);
+  str += "\n";
 
-  for (auto r : reports){
+  str += "MONITOR REPORT\n";
+  str += fmt::format("    {:<20} {:<60} {:>10} {:>10} {:>8}\n",
+		     "nome", "percorso", "dim (MB)", "limit (MB)", "perc");
+  str += fmt::format("    {:-<20} {:-<60} {:->10} {:->10} {:->8}\n",
+		     "", "", "", "", "", "");
+  
+for (auto r : reports){
     double perc = int(r->size - r->sizeLimit) / double(r->sizeLimit) * 100;
-    out  << repeatChr(4) 
-	 << formattedStr(r->name, 20) << " "
-	 << formattedStr(r->path, 60) << " "
-	 << formattedStr(to_string(r->size), 10) << " "
-	 << formattedStr(to_string(r->sizeLimit), 10) << " "
-	 << formattedStr(perc, 3, 7) << '%' << endl;
+    str += fmt::format("    {:<20} {:<60} {:>10d} {:>10d} {:>7.2f}%\n",
+		       r->name, r->path, r->size, r->sizeLimit, perc);
   }
 
   if (reports.empty())
-    out << repeatChr(4) << "Nessun rapporto" << endl;
+    str += fmt::format("    No reports\n");
 
-  out << endl;
-
+  out << str;
   return out;
 }
 
 void EmailBuilder::sendAll(EmailHandler& sender, const string& from) const {
-  string subj = "[msns] Rapporto";
+  string subj = "[msns] Report";
 
   // Global Emails
   ostringstream gStream;

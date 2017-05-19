@@ -7,7 +7,7 @@ include(FindPkgConfig)
 add_compile_options("-std=c++11")
 
 # Custom constant
-add_definitions(-DVERSION="0.1.0")
+add_definitions(-DVERSION="0.2.0")
 
 if(CMAKE_BUILD_TYPE MATCHES DEBUG)
   set(GLOB_CONFIG_PATH "./config.ini")
@@ -33,12 +33,16 @@ find_package(Boost 1.54 REQUIRED
 find_package(Threads)
 find_package(CURL REQUIRED)
 
+# Lib
+link_directories(lib)
+
 # FILES
 include_directories(include src
+  lib
   ${Boost_INCLUDE_DIR}
   ${CMAKE_BINARY_DIR}
   ${CURL_INCLUDE_DIRS})
-file(GLOB SOURCES "src/*.cpp")
+file(GLOB SOURCES "src/*.cpp" "lib/**/*.cpp")
 
 set_property(SOURCE ${SOURCES}
   APPEND_STRING
@@ -66,7 +70,7 @@ install(DIRECTORY
   DIRECTORY_PERMISSIONS
   OWNER_WRITE OWNER_READ OWNER_EXECUTE
   GROUP_WRITE GROUP_READ GROUP_EXECUTE
-  WORLD_READ WORLD_EXECUTE
+  WORLD_READ WORLD_EXECUTE)
 install(TARGETS msns
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
