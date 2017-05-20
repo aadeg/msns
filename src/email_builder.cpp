@@ -41,7 +41,7 @@ ostream& EmailBuilder::outputMessage(ostream& out,
 
   str += "MONITOR REPORT\n";
   str += fmt::format("    {:<20} {:<60} {:>10} {:>10} {:>8}\n",
-		     "nome", "percorso", "dim (MB)", "limit (MB)", "perc");
+		     "name", "path", "dim (MB)", "limit (MB)", "perc");
   str += fmt::format("    {:-<20} {:-<60} {:->10} {:->10} {:->8}\n",
 		     "", "", "", "", "", "");
   
