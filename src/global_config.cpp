@@ -25,12 +25,6 @@ namespace pt = boost::property_tree;
 using namespace std;
 using namespace msns;
 
-  std::string emailUrl;
-    std::string emailUsername;
-    std::string emailPassword;
-    bool emailSsl;
-    std::string emailFrom;
-
 GlobalConfig::GlobalConfig(const GlobalConfig& other) :
   Config(other), machineName(other.machineName), 
   folders(other.folders), emails(other.emails),
