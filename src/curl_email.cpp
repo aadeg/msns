@@ -51,7 +51,7 @@ CurlEmail& CurlEmail::operator= (CurlEmail&& other){
   return *this;
 }
 
-void CurlEmail::sendEmail(const string& from, const list<string>& to,
+void CurlEmail::sendEmail(const string& from, const vector<string>& to,
 			  const string& subject, const string& body){
   string toStr;
   for (const string& s : to)
@@ -96,7 +96,7 @@ shared_ptr<CURL> CurlEmail::getCurl(const string& from,
 }
 
 
-shared_ptr<curl_slist> CurlEmail::getRecipents(const list<string>& to) {
+shared_ptr<curl_slist> CurlEmail::getRecipents(const vector<string>& to) {
   curl_slist* tmp = NULL;
   for (auto it = to.cbegin(); it != to.end(); ++it)
     tmp = curl_slist_append(tmp, it->c_str());
@@ -108,10 +108,10 @@ shared_ptr<curl_slist> CurlEmail::getRecipents(const list<string>& to) {
 }
 
 shared_ptr<stringstream> CurlEmail::getBodyStream(const std::string& from,
-				      const std::list<std::string>& to,
+				      const std::vector<std::string>& to,
 				      const std::string& subject,
 				      const std::string& body){
-  stringstream* sstream = new stringstream(ios_base::in | ios_base::out);
+  shared_ptr<stringstream> sstream = make_shared<stringstream>(ios_base::in | ios_base::out);
 
   string _body = boost::replace_all_copy(body, "\n", "\r\n");
 
@@ -122,7 +122,7 @@ shared_ptr<stringstream> CurlEmail::getBodyStream(const std::string& from,
 	  << "\r\n"
 	   << _body << "\r\n";
 
-  return shared_ptr<stringstream>(sstream);
+  return sstream;
 }
 
 size_t CurlEmail::body_payload(char *buffer, size_t size, size_t nitems, void *instream){

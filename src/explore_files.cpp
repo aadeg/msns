@@ -29,7 +29,7 @@ using namespace msns;
 
 string sysErrMsg();
 
-void msns::exploreDir(const string& path, file_size& size, list<Report>& reports){
+void msns::exploreDir(const string& path, file_size& size, vector<Report>& reports){
   auto logger = spdlog::get(MSNS_LOGGER);
 
   SPDLOG_TRACE(logger, "Calling exploreDir. Path: {0}", path);

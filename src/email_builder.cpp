@@ -33,19 +33,19 @@ void EmailBuilder::addReport(const Report& report){
 }
 
 ostream& EmailBuilder::outputMessage(ostream& out,
-				     const list<report_ptr>& reports) const {
-  string str("MSNS REPORT\n");
+				     const vector<report_ptr>& reports) const {
+  string str("MSNS REPORT\n\n");
   str += fmt::format("    {:<15}{}\n", "Date:", currentTime("%a %d %b %Y %H:%M"));
   str += fmt::format("    {:<15}{}\n", "Rep. Type:", reportLvl);
   str += "\n";
 
-  str += "MONITOR REPORT\n";
+  str += "MONITOR REPORT\n\n";
   str += fmt::format("    {:<20} {:<60} {:>10} {:>10} {:>8}\n",
 		     "name", "path", "dim (MB)", "limit (MB)", "perc");
   str += fmt::format("    {:-<20} {:-<60} {:->10} {:->10} {:->8}\n",
 		     "", "", "", "", "", "");
   
-for (auto r : reports){
+  for (auto r : reports){
     double perc = int(r->size - r->sizeLimit) / double(r->sizeLimit) * 100;
     str += fmt::format("    {:<20} {:<60} {:>10d} {:>10d} {:>7.2f}%\n",
 		       r->name, r->path, r->size, r->sizeLimit, perc);
@@ -66,7 +66,7 @@ void EmailBuilder::sendAll(EmailHandler& sender, const string& from) const {
   outputMessage(gStream, globalReports);
   string globalMsg = gStream.str();
   for(email_addr email : globalEmails){
-    list<string> to = {email};
+    vector<string> to = {email};
     sender.sendEmail(from, to, subj, globalMsg);
   }
 
@@ -75,7 +75,7 @@ void EmailBuilder::sendAll(EmailHandler& sender, const string& from) const {
       ostringstream lStream;
       outputMessage(lStream, kv.second);
       string localMsg = lStream.str();
-      list<string> to = {kv.first};
+      vector<string> to = {kv.first};
       sender.sendEmail(from, to, subj, localMsg);
   }
     

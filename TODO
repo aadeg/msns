@@ -2,7 +2,6 @@ HIGH PRIORITY
 --
 
 NORMAL PRIORITY
-+ Improve email formatting code using fmt library
 + Add test for CI
 
 LOW PRIORITY

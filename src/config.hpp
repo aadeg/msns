@@ -19,7 +19,7 @@
 
 #include <memory>
 #include <string>
-#include <list>
+#include <vector>
 #include <map>
 
 #include "spdlog/spdlog.h"
@@ -52,8 +52,8 @@ namespace msns {
     void sanitize();
   public:
     std::string machineName;
-    std::list<std::string> folders;
-    std::list<std::string> emails;
+    std::vector<std::string> folders;
+    std::vector<std::string> emails;
     
     std::string emailUrl;
     std::string emailUsername;
@@ -77,7 +77,7 @@ namespace msns {
   public:
     int sizeLimit;
     std::string name;
-    std::list<std::string> emails;
+    std::vector<std::string> emails;
 
     LocalConfig();
     explicit LocalConfig(const std::string& fileName) : Config(fileName) {};

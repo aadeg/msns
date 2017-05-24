@@ -23,7 +23,7 @@
 #include <dirent.h>
 
 #include <string>
-#include <list>
+#include <vector>
 
 #include "const.hpp"
 #include "report.hpp"
@@ -31,7 +31,7 @@
 namespace msns {
   typedef unsigned long file_size;
 
-  void exploreDir(const std::string& path, file_size& size, std::list<msns::Report>& reports);
+  void exploreDir(const std::string& path, file_size& size, std::vector<msns::Report>& reports);
   long getSize(const std::string& path);
 
   std::string sysErrMsg();

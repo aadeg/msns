@@ -18,7 +18,7 @@
 #define _REPORT_H_
 
 #include <string>
-#include <list>
+#include <vector>
 #include <iostream>
 
 namespace msns {
@@ -27,7 +27,7 @@ namespace msns {
     std::string path;
     unsigned long sizeLimit;
     unsigned long size;
-    std::list<std::string> localEmails;
+    std::vector<std::string> localEmails;
   };
   
 }

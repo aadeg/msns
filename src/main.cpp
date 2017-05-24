@@ -191,7 +191,7 @@ void runAnalysis(const GlobalConfig& config, const string& reportLvl,
   //                       EXPLORING                        //
   ////////////////////////////////////////////////////////////
   logger->info("Found {} folders to explore", config.folders.size());
-  list<Report> reports;
+  vector<Report> reports;
   // Traveling
   for (auto folder : config.folders){
     unsigned long globSize;
@@ -202,13 +202,10 @@ void runAnalysis(const GlobalConfig& config, const string& reportLvl,
   //                      REPORTING                         //
   ////////////////////////////////////////////////////////////
   if (reportLvl == "violation"){
-    // Filtering
+    // Filteringp
     SPDLOG_DEBUG(logger, "Report Lvl: {}. Filtering reports", reportLvl);
     SPDLOG_DEBUG(logger, "{} Reports before filtering", reports.size());
-    reports.remove_if([](Report r){
-	return r.size < r.sizeLimit;
-
-      });
+    remove_if(reports.begin(), reports.end(), [](auto r){ return r.size < r.sizeLimit; });
   }
   logger->info("{} reports created", reports.size());
 
