@@ -34,7 +34,7 @@ add_subdirectory(${EXT_PROJECTS_DIR}/gtest)
 # Sources
 # ----------------
 include_directories(${COMMON_INCLUDES})
-file(GLOB SOURCES "src/*.cpp" "lib/**/*.cpp")
+file(GLOB SOURCES "src/*.cpp" "lib/**/*.cpp" "lib/**/*.cc")
 
 
 # ----------------
