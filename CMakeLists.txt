@@ -3,7 +3,7 @@ set(PROJECT_NAME_STR msns)
 set(PROJECT_VERSION "0.2.0")
 project(${PROJECT_NAME_STR} C CXX)
 
-add_compile_options("-std=c++14")
+add_compile_options("-std=c++11")
 
 
 # ----------------
@@ -40,7 +40,7 @@ file(GLOB SOURCES "src/*.cpp" "lib/**/*.cpp")
 # ----------------
 # Definitions
 # ----------------
-add_definitions(-DVERSION="0.2.0")
+add_definitions(-DVERSION="0.2.1")
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
   set(GLOB_CONFIG_PATH "./config.ini")
