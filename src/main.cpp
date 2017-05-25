@@ -207,9 +207,9 @@ void runAnalysis(const GlobalConfig& config, const string& reportLvl,
     // Filteringp
     SPDLOG_DEBUG(logger, "Report Lvl: {}. Filtering reports", reportLvl);
     SPDLOG_DEBUG(logger, "{} Reports before filtering", reports.size());
-    remove_if(reports.begin(), reports.end(), [](Report r){ 
-	return r.size < r.sizeLimit;
-      });
+    reports.erase(remove_if(reports.begin(), reports.end(), [](Report r){ 
+	  return r.size < r.sizeLimit;
+	}), reports.end());
   }
   logger->info("{} reports created", reports.size());
 
