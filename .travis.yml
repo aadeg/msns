@@ -4,8 +4,10 @@ compiler:
   - clang
 os:
   - linux
+sudo: required
 
 before_script:
+  - apt-get install libboost-all-dev libcurl4-openssl-dev
   - export CTEST_OUTPUT_ON_FAILURE=1
 
-script: cmake .. && make && make test
+script: cmake . && make && make test
