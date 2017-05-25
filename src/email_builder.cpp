@@ -54,12 +54,13 @@ ostream& EmailBuilder::outputMessage(ostream& out,
   if (reports.empty())
     str += fmt::format("    No reports\n");
 
+  str += "\n\n" + EMAIL_FOOTER;
   out << str;
   return out;
 }
 
 void EmailBuilder::sendAll(EmailHandler& sender, const string& from) const {
-  string subj = "[msns] Report";
+  string subj = "[msns] Report " + machineName;
 
   // Global Emails
   ostringstream gStream;

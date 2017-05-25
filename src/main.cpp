@@ -66,12 +66,6 @@ int main(int argc, char* argv[]){
   start_t = chrono::high_resolution_clock::now();
 
   ////////////////////////////////////////////////////////////
-  //                        LOGGER                          //
-  ////////////////////////////////////////////////////////////
-  initLogger();
-  auto logger = spdlog::get(MSNS_LOGGER);
-
-  ////////////////////////////////////////////////////////////
   //                        OPTIONS                         //
   ////////////////////////////////////////////////////////////
   bool run = false;
@@ -125,7 +119,15 @@ int main(int argc, char* argv[]){
     return 0;
   }
 
-  // Option validation
+  ////////////////////////////////////////////////////////////
+  //                        LOGGER                          //
+  ////////////////////////////////////////////////////////////
+  initLogger();
+  auto logger = spdlog::get(MSNS_LOGGER);
+
+  ////////////////////////////////////////////////////////////
+  //                    OPTION VALIDATION                   //
+  ////////////////////////////////////////////////////////////
   if (vm.count("run") && vm.count("init")){
     cerr << "Conflicting options: --run and --init can't be both active" << endl;
     return -1;

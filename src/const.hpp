@@ -26,6 +26,9 @@ namespace msns {
   const std::string LOCAL_CONFIG_NAME = "msns.ini";
   const char PATH_SEPARATOR = '/';
   const std::string MSNS_LOGGER = "msns";
+  const std::string EMAIL_FOOTER = "msns " + std::string(VERSION) +
+    " - Copyright (C) 2017 Andrea Giove\n" +
+    "https://github.com/aadeg/msns";
 }
 
 #endif

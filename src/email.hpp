@@ -79,7 +79,6 @@ namespace msns {
     typedef std::shared_ptr<const Report> report_ptr;
 
   private:
-
     std::string machineName;
     std::string reportLvl;
     std::vector<email_addr> globalEmails;
