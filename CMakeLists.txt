@@ -3,7 +3,7 @@ set(PROJECT_NAME_STR msns)
 set(PROJECT_VERSION "0.2.0")
 project(${PROJECT_NAME_STR} C CXX)
 
-add_compile_options("-std=c++14")
+add_compile_options("-std=c++11")
 
 
 # ----------------
@@ -105,30 +105,28 @@ install(TARGETS msns
 # ----------------
 # Test
 # ----------------
-if(CMAKE_BUILD_TYPE MATCHES Debug)
-  add_definitions(${MSVC_COMPILER_DEFS})
-  enable_testing()
-  set(PROJECT_TEST_NAME ${PROJECT_NAME_STR}_test)
-  include_directories(${GTEST_INCLUDE_DIRS} ${COMMON_INCLUDES}
-    include src)
+add_definitions(${MSVC_COMPILER_DEFS})
+enable_testing()
+set(PROJECT_TEST_NAME ${PROJECT_NAME_STR}_test)
+include_directories(${GTEST_INCLUDE_DIRS} ${COMMON_INCLUDES}
+  include src)
 
-  list(REMOVE_ITEM SOURCES ${PROJECT_SOURCE_DIR}/src/main.cpp)
-  file(GLOB TEST_SRC_FILES ${PROJECT_SOURCE_DIR}/test/*.cpp)
-  add_executable(${PROJECT_TEST_NAME} ${TEST_SRC_FILES} ${SOURCES})
-  add_dependencies(${PROJECT_TEST_NAME} googletest)
+list(REMOVE_ITEM SOURCES ${PROJECT_SOURCE_DIR}/src/main.cpp)
+file(GLOB TEST_SRC_FILES ${PROJECT_SOURCE_DIR}/test/*.cpp)
+add_executable(${PROJECT_TEST_NAME} ${TEST_SRC_FILES} ${SOURCES})
+add_dependencies(${PROJECT_TEST_NAME} googletest)
 
-  target_link_libraries(${PROJECT_TEST_NAME}
-    ${GTEST_LIBS_DIR}/libgtest.a
-    ${GTEST_LIBS_DIR}/libgtest_main.a)
-  target_link_libraries(${PROJECT_TEST_NAME}
-    ${LIB_LOCATION}
-    ${CMAKE_THREAD_LIBS_INIT}
-    ${Boost_LIBRARIES}
-    ${CURL_LIBRARIES})
+target_link_libraries(${PROJECT_TEST_NAME}
+  ${GTEST_LIBS_DIR}/libgtest.a
+  ${GTEST_LIBS_DIR}/libgtest_main.a)
+target_link_libraries(${PROJECT_TEST_NAME}
+  ${LIB_LOCATION}
+  ${CMAKE_THREAD_LIBS_INIT}
+  ${Boost_LIBRARIES}
+  ${CURL_LIBRARIES})
 
-  file(REMOVE ./test)
-  file(MAKE_DIRECTORY ./test/)
-  file(COPY ${PROJECT_SOURCE_DIR}/test/assets/ DESTINATION ./test/assets/)
+file(REMOVE ./test)
+file(MAKE_DIRECTORY ./test/)
+file(COPY ${PROJECT_SOURCE_DIR}/test/assets/ DESTINATION ./test/assets/)
 
-  add_test(test1 ${PROJECT_TEST_NAME})
-endif()
+add_test(test1 ${PROJECT_TEST_NAME})
