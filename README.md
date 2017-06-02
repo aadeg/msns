@@ -8,6 +8,27 @@ Features
 + Global configuration with global notification emails.
 + Per folder configuration: size limit and folder notification emails.
 
+Email Example
+------
+```
+MSNS REPORT
+
+    Date:          Sat 27 May 2017 08:13
+    Rep. Type:     all
+
+MONITOR REPORT
+
+    name                 path                                                 dim (MB) limit (MB)     perc
+    -------------------- --------------------------------------------------- ---------- ---------- --------
+    Database             /home/mysql                                               6805      15360  -55.70%
+    Site                 /home/www-data                                            6593      15360  -57.08%
+
+
+msns 0.2.2 - https://github.com/aadeg/msns
+
+```
+
+-----
 Intallation
 -----
 *msns* uses this libraries:
@@ -50,11 +71,11 @@ Usage
 -----
 To monitor a new folder, first make sure that the *absolute path* of the folder or one of its **parents** is written in the **global configuration** (section *folders*).
 
-Next, go in the folder using *cd* and run this command:
+Next, go to the folder using *cd* and run this command:
 ```
 $ msns --init --size 1024 --name ftp_folder
 ```
-This command create a new file *msns.ini* in the folder you are in. With *--size* you declare to send a notification if the folder exceeds 1024 MB; *--name* sets a friendly name for the folder in the email notification. You can manually edit the *msns.ini* file in order to add email addresses to which send notification for this particular folder. Keep in mind that email addresses specified in the global configuration will receive notification for all folders.
+This command creates a new file *msns.ini* in the folder you are in. With *--size* you declare to send a notification if the folder exceeds 1024 MB; *--name* sets a friendly name for the folder in the email notification. You can manually edit the *msns.ini* file in order to add email addresses to which send notification for this particular folder. Keep in mind that email addresses specified in the global configuration will receive notification for all folders.
 
 After adding the folder, you can run the command:
 ```
