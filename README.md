@@ -28,7 +28,6 @@ msns 0.2.2 - https://github.com/aadeg/msns
 
 ```
 
------
 Intallation
 -----
 *msns* uses this libraries:
