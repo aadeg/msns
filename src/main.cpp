@@ -21,6 +21,7 @@
 #include <map>
 #include <memory>
 #include <chrono>
+#include <cstdlib>
 
 #include <boost/log/core.hpp>
 #include <boost/log/expressions.hpp>
@@ -39,8 +40,21 @@
 using namespace std;
 using namespace msns;
 
+std::string globalConfigPath;
+std::string fileLoggerPath;
+
 void runAnalysis(const GlobalConfig& config, const string& reportLvl, bool emailNtf);
 void initFolder(const string& initFolder, const string& initName, int initSize);
+
+void initGlobalVars(){
+#ifdef USE_ENV_VARS
+  globalConfigPath = getenv("GLOBAL_CONFIG_PATH");
+  fileLoggerPath = getenv("FILE_LOGGER_PATH");
+#else
+  globalConfigPath = GLOBAL_CONFIG_PATH;
+  fileLoggerPath = FILE_LOGGER_PATH;
+#endif
+}
 
 void initLogger(){
   using namespace spdlog;
@@ -54,7 +68,7 @@ void initLogger(){
   sinks.push_back(color_sink);
 
   auto rotating_sink = make_shared<sinks::rotating_file_sink_st>
-    (FILE_LOGGER_PATH, 1049000 * 10, 3);
+    (fileLoggerPath, 1049000 * 10, 3);
   sinks.push_back(rotating_sink);
   
   auto combined_logger = make_shared<logger>("msns", sinks.begin(), sinks.end());
@@ -64,6 +78,11 @@ void initLogger(){
 int main(int argc, char* argv[]){
   chrono::high_resolution_clock::time_point start_t, end_t;
   start_t = chrono::high_resolution_clock::now();
+
+  ////////////////////////////////////////////////////////////
+  //                   GLOBAL VARIABLES                     //
+  ////////////////////////////////////////////////////////////
+  initGlobalVars();
 
   ////////////////////////////////////////////////////////////
   //                        OPTIONS                         //
@@ -164,8 +183,8 @@ int main(int argc, char* argv[]){
   ////////////////////////////////////////////////////////////
   //                        CONFING                         //
   ////////////////////////////////////////////////////////////
-  logger->info("Global config path is {}", GLOBAL_CONFIG_PATH);
-  GlobalConfig config(GLOBAL_CONFIG_PATH);
+  logger->info("Global config path is {}", globalConfigPath);
+  GlobalConfig config(globalConfigPath);
   config.load();
 
   ////////////////////////////////////////////////////////////

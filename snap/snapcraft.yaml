@@ -1,0 +1,30 @@
+name: msns
+version: '0.2.2'
+summary: Max Size Notification System
+description: |
+  msns is a tool that sends an email whenever a folder reaches a size limit.
+  It is completely configurable and it is intended to work with cron daemon
+  in order to periodically check folders.
+
+grade: devel # must be 'stable' to release into candidate/stable channels
+confinement: devmode # use 'strict' once you have the right plugs and slots
+
+apps:
+  msns:
+    command: msns
+    plugs: [home, network]
+    environment:
+      GLOBAL_CONFIG_PATH: $SNAP_USER_DATA/config.ini
+      FILE_LOGGER_PATH: $SNAP_USER_DATA/msns.log
+
+parts:
+  msns:
+    plugin: cmake
+    configflags:
+      - -DUSE_ENV_VARS=1
+    build-packages:
+      - g++
+      - cmake
+      - libboost-program-options-dev
+      - libboost-log-dev
+      - libcurl4-openssl-dev
