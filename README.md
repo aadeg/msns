@@ -1,5 +1,7 @@
 msns - Max Size Notification System
 ===========
+[![Build Status](https://travis-ci.org/aadeg/msns.svg?branch=master)](https://travis-ci.org/aadeg/msns)
+
 *msns* is a tool that sends an email whenever a folder reaches a size limit. It is completely configurable and it is intended to work with *cron* daemon in order to periodically check folders.
 
 Features
@@ -28,7 +30,6 @@ msns 0.2.2 - https://github.com/aadeg/msns
 
 ```
 
------
 Intallation
 -----
 *msns* uses this libraries:
