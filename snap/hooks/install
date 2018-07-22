@@ -1,5 +1,0 @@
-#!/bin/bash
-
-# Config file
-CONFIG_DST=${SNAP_USER_DATA}/config.ini
-cp assests/config.ini $CONFIG_DST

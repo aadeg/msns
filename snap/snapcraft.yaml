@@ -14,7 +14,7 @@ apps:
     command: msns
     plugs: [home, network]
     environment:
-      GLOBAL_CONFIG_PATH: $SNAP_USER_DATA/config.ini
+      GLOBAL_CONFIG_PATH: $SNAP/config.ini
       FILE_LOGGER_PATH: $SNAP_USER_DATA/msns.log
 
 parts:
@@ -28,3 +28,6 @@ parts:
       - libboost-program-options-dev
       - libboost-log-dev
       - libcurl4-openssl-dev
+  assets:
+    plugin: dump
+    source: assets/
